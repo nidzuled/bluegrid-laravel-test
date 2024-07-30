@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'vercel' => [
+        'uri' => env('VERCEL_API_URI', 'https://rest-test-eight.vercel.app/api'),
+        'timeout' => env('VERCEL_TIMEOUT', 10),
+        'retry_times' => env('VERCEL_RETRY_TIMES', null),
+        'retry_milliseconds' => env('VERCEL_RETRY_MILLISECONDS', null),
+    ],
 ];
