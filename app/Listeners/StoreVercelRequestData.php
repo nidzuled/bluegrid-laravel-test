@@ -8,11 +8,15 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 class StoreVercelRequestData implements ShouldQueue
 {
+    public function __construct(
+        protected StoreDirectoriesAndFiles $storeDirectoriesAndFiles,
+    ) {}
+
     /**
      * Handle the event.
      */
     public function handle(VercelDataFetched $event): void
     {
-        (new StoreDirectoriesAndFiles)->handle($event->vercelRequestData);
+        $this->storeDirectoriesAndFiles->handle($event->vercelRequestData);
     }
 }
