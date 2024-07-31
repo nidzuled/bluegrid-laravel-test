@@ -1,66 +1,78 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Bluegrid task
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Create an application using the Laravel framework that contains a feature to fetch data from the https://rest-test-eight.vercel.app/api/test endpoint, transform the result to meet a specific data structure, and store the data into the database. The application should also have three exposed endpoints:
 
-## About Laravel
+/api/files-and-directories - Parses data from the external API endpoint and returns a new data structure with all directories and files.
+/api/directories - Lists only directories.
+/api/files - Lists only files.
+Besides the endpoints, the application needs to log a timestamp for the specific event:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+When the new data is fetched from the external API.
+The /api/directories-and-files endpoint should return data in the following form:
+```
+{
+  "<IP adress>": [
+    {
+      "<directory name>": [
+        {
+          "<sub-directory name>": [
+            "<file name>",
+            "<file name>",
+            "<file name>"
+          ]
+        },
+        {
+          "<sub-directory name>": [
+            "<file name>",
+            "<file name>",
+            "<file name>"
+          ]
+        },
+        "<file name>",
+        "<file name>",
+        "<file name>"
+      ]
+    },
+    {
+      "<directory name>": [
+        "<file name>",
+        "<file name>",
+        "<file name>"
+      ]
+    }
+  ]
+}
+```
+The /api/directories endpoint should return a paginated list of directories in an array, with a limit of 100 records per page. The /api/files endpoint should return a paginated list of files in an array, with a limit of 100 records per page.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+An important note is that the external endpoint returns a large dataset and has a delay of about ten seconds. In addition to data transformation, the application should save directories into the directories table and files into the files table. The end user should receive a response as quickly as possible for all three endpoints. This means it is necessary to create a mechanism that ensures the endpoints don’t have a significant delay in response time.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+The code needs to be uploaded to a GitHub repository for review. Additionally, the application needs to function in a local environment for easier testing.
 
-## Learning Laravel
+## About project and structure
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+For this project Laravel 11 was used with `sail` for local development.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Requirements:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Installed [Docker Compose](https://docs.docker.com/compose/install/) or [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
-## Laravel Sponsors
+### Starting project
+- Run command `./vendor/bin/sail up`
+- Run migration `./vendor/bin/sail artisan migrate`
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Project structure
 
-### Premium Partners
+The default Laravel application structure is used. With adding extra namespace `App\Services\Vercel` for better organisation.
+All logic related to transforming request and storing directories and files is there.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### Running tests
 
-## Contributing
+```bash
+./vendor/bin/sail artisan test
+```
+### Running php linter
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+./vendor/bin/duster lint --dirty
+```
